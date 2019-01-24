@@ -4,7 +4,7 @@ int main() {
 
 
     char name[] = {'A','d', 'r', 'i', 'a', 'n','o','\0'};
-    char surname = "Cognome";
+    char surname[] = "Cognome";
 
     printf("%s ", name);
     printf("%s ", surname);
