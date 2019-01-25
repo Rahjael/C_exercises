@@ -46,6 +46,7 @@ Operators:
 
 
 */
+
     printf("Enter your age:");
     scanf("%d", &age);
     if (age <= 18) {
