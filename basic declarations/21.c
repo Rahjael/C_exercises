@@ -7,9 +7,9 @@ and sum of all odd values between them*/
 
 
 
-int numbers[4], sum = 0;
+int numbers[4] = {0}, sum = 0;
 
-
+/*
 printf("Insert number a:\n");
 scanf("%d", &numbers[0]);
 
@@ -24,10 +24,28 @@ scanf("%d", &numbers[3]);
 
 printf("Insert number e:\n");
 scanf("%d", &numbers[4]);
+*/
 
 
+// user input
 
-for (int i=0; i < 5; i++){  // setto = 0 tutti i numeri pari inseriti dall'utente
+for (int i=0; i<5;i++){
+    printf("Insert a number:\n");
+    scanf("%d", &numbers[i]);
+
+}
+
+// check array for debug
+
+for (int i=0; i<5;i++){
+    printf("\n\nPosition %d, number %d\n", i+1, numbers[i]);
+
+}
+
+
+// setto = 0 tutti i numeri pari inseriti dall'utente
+
+for (int i=0; i < 5; i++){
     if (numbers[i]%2 != 0)
         numbers[i] = numbers[i];
         else
@@ -36,13 +54,17 @@ for (int i=0; i < 5; i++){  // setto = 0 tutti i numeri pari inseriti dall'utent
         }
 }
 
-for (int i= 0; i<5; i++){ // stampo i numeri per debug
+// ristampo i numeri per debug
+
+for (int i= 0; i<5; i++){ 
     printf("%d = %d\n ", i, numbers[i]);
 }
 
-for (int i=0; i<5; i++){ // sommo tutti i numeri dell'array
+// sommo tutti i numeri dell'array
+
+for (int i=0; i<5; i++){ 
     sum += numbers[i];
-    printf("i = %d, add %d, to sum = %d\n", i, numbers[i], sum);
+    printf("i = %d, add %d to sum = %d\n", i, numbers[i], sum);
 }
 
 
