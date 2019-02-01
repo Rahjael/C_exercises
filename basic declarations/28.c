@@ -10,7 +10,7 @@ the average of all positive values.
 
 int main() {
 
-int array[NUM-1], sum = 0, counter = 0;
+int array[NUM], sum = 0, counter = 0;
 
 
 // user input NUM numbers

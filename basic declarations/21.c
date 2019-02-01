@@ -7,7 +7,7 @@ and sum of all odd values between them*/
 
 
 
-int numbers[4] = {0}, sum = 0;
+int numbers[5] = {0}, sum = 0;
 
 /*
 printf("Insert number a:\n");
@@ -46,12 +46,8 @@ for (int i=0; i<5;i++){
 // setto = 0 tutti i numeri pari inseriti dall'utente
 
 for (int i=0; i < 5; i++){
-    if (numbers[i]%2 != 0)
-        numbers[i] = numbers[i];
-        else
-        {
+    if (numbers[i]%2 == 0)
             numbers[i] = 0;
-        }
 }
 
 // ristampo i numeri per debug
