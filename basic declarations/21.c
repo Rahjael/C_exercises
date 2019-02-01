@@ -41,14 +41,12 @@ for (int i= 0; i<5; i++){ // stampo i numeri per debug
 }
 
 for (int i=0; i<5; i++){ // sommo tutti i numeri dell'array
-    sum = numbers[i];
-    printf("I = %d, add %d, to sum = %d\n", i, numbers[i], sum);
+    sum += numbers[i];
+    printf("i = %d, add %d, to sum = %d\n", i, numbers[i], sum);
 }
 
 
-
 printf("The sum is %d", sum);
-
 
 
 
