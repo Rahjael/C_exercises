@@ -2,6 +2,11 @@
 
 int main() {
 
+/*
+Write a C program to compute the perimeter and area of a circle with a radius of 6 inches
+*/
+
+
 int radius = 6;
 
 float perimeter = radius*2*3.14;

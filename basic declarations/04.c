@@ -2,6 +2,11 @@
 
 int main() {
 
+/*
+Write a C program to print the following characters in a reverse way.
+*/
+
+
 char char1 = 'X';
 char char2 = 'M';
 char char3 = 'L';
