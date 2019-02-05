@@ -30,7 +30,8 @@ for (num=3; num<=MAX; num++){
 
     // if prime, print it
     if (is_prime == 1){
-
+        
+        // check line. If 10 numbers already printed, go to new line
         if (count == 10){            
             printf("\n");
             count = 0;
