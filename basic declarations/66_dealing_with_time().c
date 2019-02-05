@@ -6,10 +6,6 @@ int main() {
 /*
 
 
-
-*/
-
-
 Sto cercando di capire come mai in C per fare una roba random ci sono tutti questi cazzi. Su Python era facilissimo.
 Ho visto quali sono i passaggi ma non voglio applicarli a tavolino.
 
@@ -69,6 +65,7 @@ time(&pippo);
 
 
 
+*/
 
 
 
