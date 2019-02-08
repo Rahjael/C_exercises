@@ -7,11 +7,14 @@
 
 void DatabaseCheck();
 void Separatori();
+void ReadFromDatabase();
 
 
 
 int main(){
 
+
+    FILE * ptr_database;
 
     // Create file
 
@@ -55,7 +58,7 @@ int main(){
 
     DatabaseCheck();
 
-    
+    ReadFromDatabase();
 
     return 0;
 
@@ -67,7 +70,7 @@ int main(){
 
 void DatabaseCheck(){
 
-    FILE * ptr_database;
+    FILE * ptr_database; // Lo metto qui o nel main? Unsure.
 
     // Check if database exists:
 
@@ -79,10 +82,13 @@ void DatabaseCheck(){
         Separatori();
         printf("### File database.txt non trovato! Primo avvio?\n");
         Separatori();
+        fclose(ptr_database);
         printf("### Creo database\n");
-        fclose(ptr_database);
+
         ptr_database = fopen("database.txt", "w");
+
         fclose(ptr_database);
+
         Separatori();
         printf("### Database creato\n");
 
@@ -92,6 +98,7 @@ void DatabaseCheck(){
         Separatori();
         printf("### File database.txt trovato.\n");
         Separatori();
+
     }
     
 
@@ -99,10 +106,47 @@ void DatabaseCheck(){
 
     printf("\n\n\n");
 
-    printf("fine");
+    printf("\nFine di DatabaseCheck()\n");
 
 
 }
+
+
+void ReadFromDatabase(){
+
+    FILE * ptr_database;
+
+    ptr_database = fopen("mock_database.txt", "r");
+
+    char db_line[50];
+
+    int c, i = 0;
+
+    while (c=fgetc(ptr_database) != EOF){
+
+        db_line[i] = c;
+        i++;
+    }
+
+    printf("Stringa: %s\n", db_line);
+
+
+/*
+    while (fgetc(ptr_database) != EOF){
+
+        fgetc(db_line, sizeof(db_line), ptr_database);
+
+        // printf("String: %s\n", db_line);
+        printf("FIrst char: %c\n", db_line[0]);
+
+    }
+*/
+
+
+    fclose(ptr_database);
+}
+
+
 
 
 void Separatori(){

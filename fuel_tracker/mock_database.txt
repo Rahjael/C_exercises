@@ -1,0 +1,4 @@
+1, Punto, 12.319, 134123, giorno1
+2, Punto, 9.235, 134150, giorno2
+3, Panda, 8.364, 4189, giorno3
+4, Panda, 7.562, 4235, giorno4
