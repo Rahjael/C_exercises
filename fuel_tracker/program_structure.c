@@ -3,12 +3,16 @@
 #include <math.h>
 #include <stdio.h>
 
+
+// Dichiaro le funzioni da usare
 int MenuSelect();
 int RegisterNew();
 int Delete();
 int ShowStats();
 
 
+
+// Main program
 
 int main(){
 
@@ -62,6 +66,9 @@ int main(){
 
 
 
+
+// Funzione da richiamare per la scelta del menu
+
 int MenuSelect(){
 
     int choice;
@@ -81,6 +88,8 @@ int MenuSelect(){
 }
 
 
+// Gestione inserimenti
+
 int RegisterNew(){
 
     printf("BLABLABLA nuovo inserimento\n");
@@ -89,6 +98,10 @@ int RegisterNew(){
 }
 
 
+
+
+// Gestione eliminazione record
+
 int Delete(){
 
     printf("BLABLABLA cancello inserimento\n");
@@ -96,6 +109,8 @@ int Delete(){
 
 }
 
+
+// Gestione visualizzazione statistiche
 
 int ShowStats(){
 
