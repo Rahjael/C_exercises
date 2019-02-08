@@ -4,9 +4,13 @@
 #include <string.h>
 
 
+
+void DatabaseCheck();
+void Separatori();
+
+
+
 int main(){
-
-
 
 
     // Create file
@@ -49,28 +53,71 @@ int main(){
 */
 
 
+    DatabaseCheck();
+
+    
+
+    return 0;
+
+}
+
 
     // Read file
 
 
-    FILE * ptr_database;
+void DatabaseCheck(){
 
+    FILE * ptr_database;
 
     // Check if database exists:
 
-    //ptr_database = fopen("database.txt", "r");
+    ptr_database = fopen("database.txt", "r");
 
-    if (fopen("database.txt", "r") == NULL)
-        printf("File database.txt non trovato!");
+    if (ptr_database == NULL)
+    {
+
+        Separatori();
+        printf("### File database.txt non trovato! Primo avvio?\n");
+        Separatori();
+        printf("### Creo database\n");
+        fclose(ptr_database);
+        ptr_database = fopen("database.txt", "w");
+        fclose(ptr_database);
+        Separatori();
+        printf("### Database creato\n");
+
+    }
     else
     {
-        printf("File database.txt trovato.");
+        Separatori();
+        printf("### File database.txt trovato.\n");
+        Separatori();
     }
     
-    //fclose(ptr_database);
+
+    fclose(ptr_database);
 
     printf("\n\n\n");
 
+    printf("fine");
+
+
+}
+
+
+void Separatori(){
+    printf("###\n###\n###\n");
+}
+
+
+
+
+
+
+
+
+
+/*
 
     // Writing data in various ways
 
@@ -78,16 +125,17 @@ int main(){
     ptr_database = fopen("database.txt", "w");
 
     char a = 'A';
-    //char string[10] = {'s','t','r','i','n'};
     
     char string[10];
+
     strcpy(string, "Stringa10");
 
     fputc(a, ptr_database);
 
     fputs(string, ptr_database);
 
-    fprintf(ptr_database, "Stringa inserita con il numero 6: %d", 6);
+    fprintf(ptr_database, "\nStringa inserita con il numero 6: %d", 6);
+
 
     fclose(ptr_database);
 
@@ -95,12 +143,8 @@ int main(){
     printf("fine prima parte\n");
 
     ptr_database = fopen("database.txt", "a");
-    fprintf(ptr_database, "Stringa finale");
+    fprintf(ptr_database, "\nStringa finale");
 
     printf("\nfine seconda parte\n");
 
-
-
-
-    return 0;
-}
+*/

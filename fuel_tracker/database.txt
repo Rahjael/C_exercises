@@ -1,1 +1,0 @@
-AStringa10Stringa inserita con il numero 6: 6Stringa finale
