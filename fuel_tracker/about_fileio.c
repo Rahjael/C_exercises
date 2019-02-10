@@ -3,11 +3,27 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* STRUTTURA DATABASE
+
+<ID>, <modello_auto>, <prezzo_rifornimento>, <km>, <data>
+
+<id> = identificativo del record. Di fatto è il numero della riga nel file
+<modello_auto> = identificativo del mezzo con il suo nome.
+<prezzo_rifornimento> = la cifra spesa per fare benzina in quel record
+<km> = i km totali del mezzo al momento di quel rifornimento
+<data> = la data di quel rifornimento
+
+I valori sono separati da ','
+
+Ogni riga è interrotta da '\n'
+
+
+*/
 
 
 void DatabaseCheck();
 void Separatori();
-void ReadFromDatabase();
+void PrintEntireDatabase();
 
 
 
@@ -58,7 +74,7 @@ int main(){
 
     DatabaseCheck();
 
-    ReadFromDatabase();
+    PrintEntireDatabase();
 
     return 0;
 
@@ -69,6 +85,9 @@ int main(){
 
 
 void DatabaseCheck(){
+
+    /* Questa funzione in realtà non serve a molto, ma l'ho messa
+    per fare un fileread */
 
     FILE * ptr_database; // Lo metto qui o nel main? Unsure.
 
@@ -112,38 +131,32 @@ void DatabaseCheck(){
 }
 
 
-void ReadFromDatabase(){
+void PrintEntireDatabase(){
 
-    FILE * ptr_database;
+
+    /* Riassume la situazione del database, stampandolo a video riga per riga
+    */
+
+    FILE * ptr_database; 
 
     ptr_database = fopen("mock_database.txt", "r");
 
-    char db_line[50];
+    char buffer[100];
 
-    int c, i = 0;
+    int i=0;
 
-    while (c=fgetc(ptr_database) != EOF){
+    printf("Il database contiene i seguenti record:\n\n");
 
-        db_line[i] = c;
-        i++;
-    }
+    do {
 
-    printf("Stringa: %s\n", db_line);
+        fgets(buffer, sizeof(buffer), ptr_database);
 
+        printf("%s\n", buffer);
+        
 
-/*
-    while (fgetc(ptr_database) != EOF){
-
-        fgetc(db_line, sizeof(db_line), ptr_database);
-
-        // printf("String: %s\n", db_line);
-        printf("FIrst char: %c\n", db_line[0]);
-
-    }
-*/
+    } while ( fgetc(ptr_database) != EOF);
 
 
-    fclose(ptr_database);
 }
 
 
@@ -155,40 +168,3 @@ void Separatori(){
 
 
 
-
-
-
-
-
-
-/*
-
-    // Writing data in various ways
-
-
-    ptr_database = fopen("database.txt", "w");
-
-    char a = 'A';
-    
-    char string[10];
-
-    strcpy(string, "Stringa10");
-
-    fputc(a, ptr_database);
-
-    fputs(string, ptr_database);
-
-    fprintf(ptr_database, "\nStringa inserita con il numero 6: %d", 6);
-
-
-    fclose(ptr_database);
-
-
-    printf("fine prima parte\n");
-
-    ptr_database = fopen("database.txt", "a");
-    fprintf(ptr_database, "\nStringa finale");
-
-    printf("\nfine seconda parte\n");
-
-*/
