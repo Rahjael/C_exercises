@@ -11,13 +11,13 @@ int CountStuff(char * string, int * ptr_alpha, int * ptr_digit, int * ptr_specia
     for (int i=0; string[i]!= '\0'; i++){
         
         if (string[i] >= 65 && string[i] <= 90 || string[i] >= 97 && string[i] <= 122){
-            *ptr_alpha += 1;
+            (*ptr_alpha)++;
         }
         else if (string[i] >= 48 && string[i] <= 57){
-            *ptr_digit += 1;
+            (*ptr_digit)++;
         }
         else if (string[i] >= 32 && string[i] <= 47 || string[i] >= 58 && string[i] <= 64 || string[i] >= 91 && string[i] <= 96 || string[i] >= 123 && string[i] <= 126){
-            *ptr_special += 1;
+            (*ptr_special)++;
         }
         else
         {
