@@ -5,7 +5,7 @@
 
 /* STRUTTURA DATABASE
 
-<ID>, <modello_auto>, <prezzo_rifornimento>, <km>, <data>
+<ID>,<modello_auto>,<prezzo_rifornimento>,<km>,<data>
 
 <id> = identificativo del record. Di fatto è il numero della riga nel file
 <modello_auto> = identificativo del mezzo con il suo nome.
@@ -16,7 +16,6 @@
 I valori sono separati da ','
 
 Ogni riga è interrotta da '\n'
-
 
 */
 
@@ -35,7 +34,6 @@ int main(){
     // Create file
 
 /*
-
     FILE * file_pointer;
 
 
@@ -53,7 +51,6 @@ int main(){
 
     fclose(file_pointer); // close file
 
-
 */
 
 
@@ -63,8 +60,6 @@ int main(){
     printf("\nSize of char %d\n", sizeof(char));
     printf("Sizeof(char) * 50: %d", sizeof(char)*50);
     printf("\nSize of stuff in bytes: %d\n\n", (sizeof(stuff)*(sizeof(char))));
-
-
 
     for (int k=0; k<50; k++){
         printf("%c", stuff[k]);
@@ -79,7 +74,6 @@ int main(){
     return 0;
 
 }
-
 
     // Read file
 
@@ -127,7 +121,6 @@ void DatabaseCheck(){
 
     printf("\nFine di DatabaseCheck()\n");
 
-
 }
 
 
@@ -148,17 +141,14 @@ void PrintEntireDatabase(){
     printf("Il database contiene i seguenti record:\n\n");
 
     do {
-
         fgets(buffer, sizeof(buffer), ptr_database);
 
-        printf("%s\n", buffer);
-        
+        printf("%s\n", buffer);        
 
     } while ( fgetc(ptr_database) != EOF);
 
 
 }
-
 
 
 
