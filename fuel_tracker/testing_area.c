@@ -4,17 +4,17 @@
 
 int main(){
 
-    char string[10] = "prova";
+    char lettera;
 
-    if(string == "prova"){
-
-        printf("IF");
-    }
-    else
-    {
-        printf("ELSE");
-    }
+    do{
     
+        printf("Inserisci lettera:\n");
+        scanf(" %c", &lettera);
+
+        printf("\nLettera: %c\n", lettera);
+
+    }while( lettera != 's');
+
     return 0;
 
 }

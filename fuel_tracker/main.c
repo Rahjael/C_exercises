@@ -3,6 +3,7 @@
 
 #define DATABASE_NAME "database" // Nome del file database (binary)
 #define CONFIG_FILE "config" // Nome del file config (binary)
+#define TEMP_STORAGE "temp_storage" // Nome del file temp (binary)
 
 
 // Dichiaro la struttura dei record nel database:
@@ -40,6 +41,7 @@ void InsertNewRecord_Append(struct Record); // Salva nel database il nuovo recor
 int InsertNewRecord_CheckVehicle(char string[15]); // Controlla se il veicolo è nuovo o scritto male
 void MainMenu(void); // Mostra il menu principale
 void ShowEntireDatabase(void); // Mostra tutte le voci del database
+void DeleteRecord(int id); // Elimina dal database la voce selezionata
 
 
 // Main program
@@ -100,7 +102,7 @@ void StartupChecks(void){
     }
     else
     {
-        printf("\n### File di configurazione non trovato. Primo avvio?\n");
+        printf("\n### File di configurazione non trovato.\n");
         printf("### Creo il file di configurazione.\n");
 
         p_config = fopen(CONFIG_FILE, "wb"); // Creo il file
@@ -108,6 +110,7 @@ void StartupChecks(void){
         struct Config config;
 
         strcpy(config.last_vehicle, "first_run");
+        printf("### File di configurazione creato.\n");
 
         printf("\n### Debug: %s\n\n", config.last_vehicle);
 
@@ -137,9 +140,6 @@ void StartupChecks(void){
     }
     
     fclose(p_database);
-
-
-
 }
 
 int CountDatabaseEntries(void){
@@ -208,7 +208,7 @@ void InsertNewRecord(void){
         else{
             // Ask if same vehicle as lasta time, else use new name
             printf("Ultimo veicolo registrato: %s. Usare? (s, n)\n", config.last_vehicle);
-            scanf("%c", &use_last);
+            scanf(" %c", &use_last);
         }
 
         switch (use_last){
@@ -222,7 +222,7 @@ void InsertNewRecord(void){
                 do {
 
                     printf("Inserisci il nome del veicolo (max 15 caratteri):\n");
-                    scanf("%s", new_record.vehicle);
+                    scanf(" %s", new_record.vehicle);
 
                     // Check if vehicle already exists
                     int is_new = InsertNewRecord_CheckVehicle(new_record.vehicle);
@@ -231,14 +231,15 @@ void InsertNewRecord(void){
                         printf("\n### ATTENZIONE: \n"
                             "### Il nome che hai inserito non corrisponde a nessun veicolo presente nel database. \n"
                             "### Si tratta di un nuovo inserimento o è stato scritto male il nome?\n"
-                            "\n\n Nome inserito: %s\n\n", new_record.vehicle);
+                            "\n\t Nome inserito: %s\n\n", new_record.vehicle);
 
                             printf("Confermi il nome inserito? (s, n)\n");
-                            scanf("%c", &confirm_vehicle);
+                            scanf(" %c", &confirm_vehicle);
                     }
                     else
                     {
-                        printf("\nConfermo il nome inserito: %s\n", new_record.vehicle);
+                        confirm_vehicle = 's';
+                        printf("\n%s già presente nel database. Confermato.\n", new_record.vehicle);
                     }
                     
 
@@ -253,9 +254,9 @@ void InsertNewRecord(void){
     }while (use_last != 's' && use_last !='n');
 
     printf("Inserisci il costo del rifornimento:\n");
-    scanf("%f", &new_record.amount);
+    scanf(" %f", &new_record.amount);
     printf("Inserisci km attuali del veicolo:\n");
-    scanf("%u", &new_record.km);
+    scanf(" %u", &new_record.km);
 
     char ans;
 
@@ -269,7 +270,7 @@ void InsertNewRecord(void){
         printf("I dati sono corretti? (s) per confermare, (n) per annullare.\n");
 
 
-        scanf("%c", &ans);
+        scanf(" %c", &ans);
 
         switch (ans){
 
@@ -346,7 +347,7 @@ void MainMenu(void){
         "(0) Esci\n"
         );
 
-        scanf("%d", &menuchoice);
+        scanf(" %d", &menuchoice);
 
         switch (menuchoice){
 
@@ -397,13 +398,10 @@ void ShowEntireDatabase(void){
         else{
             // Risposto il cursore indietro di un char (1 byte)
             fseek(p_file, -1, SEEK_CUR);
-
             // Leggo il chunk di dati per struct Record
             fread(&temp_record, sizeof(struct Record), 1, p_file);
-
             // Prendo il carattere successivo per vedere se mi aspetta EOF
             c = fgetc(p_file);
-
             // Risposto il cursore indietro di un char (1 byte)
             fseek(p_file, -1, SEEK_CUR);
 
@@ -427,13 +425,11 @@ int InsertNewRecord_CheckVehicle(char vehicle_to_check[15]){
 
     //printf("\n### Debug - Vehicle to check: %s\n", vehicle_to_check);
 
-    FILE * p_buffer = fopen(DATABASE_NAME, "r");
+    FILE * p_buffer = fopen(DATABASE_NAME, "rb");
 
     do{
         fread(&record, sizeof(struct Record), 1, p_buffer);
-
         c = fgetc(p_buffer); // Prendo il carattere per la verifica del fine stream
-
         fseek(p_buffer, -1, SEEK_CUR); // Mando indietro il cursore di 1 byte
 
         if (strcmp(vehicle_to_check, record.vehicle) == 0){
@@ -450,5 +446,39 @@ int InsertNewRecord_CheckVehicle(char vehicle_to_check[15]){
     fclose(p_buffer);
 
     return is_new;
+
+}
+
+
+void DeleteRecord(int id){
+
+    struct Record temp_record; // Creo il temp_record in cui mettere i dati estratti dal database
+    unsigned int choice;
+    int count=0;
+
+    ShowEntireDatabase();
+
+    printf("Quale record vuoi eliminare? (Inserisci il numero ID)\n");
+    scanf(" %d", &choice);
+
+    FILE * p_buffer = fopen(DATABASE_NAME, "r+b");
+
+    // Trova il record da eliminare e conta quanti record
+    do{
+        fread(&temp_record, sizeof(struct Record), 1, p_buffer);
+        count++;
+    } while (temp_record.id != choice);
+
+    fclose(p_buffer);
+
+
+
+
+
+
+
+
+
+
 
 }
