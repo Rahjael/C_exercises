@@ -6,15 +6,6 @@
 #define TEMP_FILE "temp" // Nome del file temp (binary)
 
 
-
-/*
-
-    "Mighty oaks from little acorns grow."
-
-*/
-
-
-
 // Dichiaro la struttura dei record nel database:
 
 struct Record {
