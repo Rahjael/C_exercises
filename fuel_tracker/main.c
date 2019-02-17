@@ -1,9 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DATABASE_NAME "database" // Nome del file database (binary)
+#define DATABASE_FILE "database" // Nome del file database (binary)
 #define CONFIG_FILE "config" // Nome del file config (binary)
-#define TEMP_STORAGE "temp_storage" // Nome del file temp (binary)
+#define TEMP_FILE "temp" // Nome del file temp (binary)
+
+
+
+/*
+
+    "Mighty oaks from little acorns grow."
+
+*/
+
 
 
 // Dichiaro la struttura dei record nel database:
@@ -36,12 +45,13 @@ struct Config {
 
 int CountDatabaseEntries(void); // Restituisce un int con il numero di record nel database
 void StartupChecks(void); // Controlla l'esistenza dei file database e config
+int StartupChecks_CheckIds(void); // Controlla i progressivi nel database
 void InsertNewRecord(void); // Chiede all'utente i dati del nuovo record
 void InsertNewRecord_Append(struct Record); // Salva nel database il nuovo record, se l'utente conferma
 int InsertNewRecord_CheckVehicle(char string[15]); // Controlla se il veicolo è nuovo o scritto male
 void MainMenu(void); // Mostra il menu principale
 void ShowEntireDatabase(void); // Mostra tutte le voci del database
-void DeleteRecord(int id); // Elimina dal database la voce selezionata
+void DeleteRecord(); // Elimina dal database la voce selezionata
 
 
 // Main program
@@ -54,7 +64,7 @@ int main(){
     struct Record uno = {1, "Punto", 12.439, 12349322};
     struct Record due = {2, "Panda", 23.234, 4502};
 
-    FILE * p_populate = fopen(DATABASE_NAME, "wb");
+    FILE * p_populate = fopen(DATABASE_FILE, "wb");
 
     fwrite(&uno, sizeof(struct Record), 1, p_populate);
     fwrite(&due, sizeof(struct Record), 1, p_populate);
@@ -93,6 +103,8 @@ void StartupChecks(void){
 
     */
 
+    int db_is_empty = 0;
+
     // Check config file
 
     FILE * p_config;
@@ -126,13 +138,12 @@ void StartupChecks(void){
 
     FILE * p_database;
 
-    if(!(p_database = fopen(DATABASE_NAME, "rb"))){
+    if(!(p_database = fopen(DATABASE_FILE, "rb"))){
         
-        printf("### Database inesistente. Lo creo.\n");
-        
-        fopen(DATABASE_NAME, "wb");
-        
+        printf("### Database inesistente. Lo creo.\n");        
+        fopen(DATABASE_FILE, "wb");        
         printf("### Database creato.\n");
+        db_is_empty = 1;
     }
     else
     {
@@ -140,6 +151,19 @@ void StartupChecks(void){
     }
     
     fclose(p_database);
+
+    // Controllo l'ordine degli id nel database
+
+    if(db_is_empty == 0){
+        if (StartupChecks_CheckIds() == 1){
+            /*
+
+
+                REORDER IDS
+
+            */
+        }
+    }
 }
 
 int CountDatabaseEntries(void){
@@ -156,7 +180,7 @@ int CountDatabaseEntries(void){
 
     FILE * p_file;
 
-    p_file = fopen(DATABASE_NAME, "rb");
+    p_file = fopen(DATABASE_FILE, "rb");
 
     do {
         // Verifico che fread non sia NULL
@@ -311,7 +335,7 @@ void InsertNewRecord_Append(struct Record to_be_stored){
     */
 
 
-    FILE * p_buffer = fopen(DATABASE_NAME, "ab");
+    FILE * p_buffer = fopen(DATABASE_FILE, "ab");
 
     fwrite(&to_be_stored, sizeof(struct Record), 1, p_buffer);
 
@@ -342,8 +366,9 @@ void MainMenu(void){
         printf("Inserisci un numero per selezionare la corrispondente voce del menu:\n"
 
         "(1) Registra nuovo acquisto\n"
-        "(2) Elimina un acquisto (NON IMPLEMENTATO)\n"
+        "(2) Elimina un acquisto\n"
         "(3) Visualizza database\n"
+        "(4) Statistiche (NON IMPLEMENTATO)" 
         "(0) Esci\n"
         );
 
@@ -356,7 +381,7 @@ void MainMenu(void){
                 break;
             
             case 2: // cancella inserimento
-                //Delete();
+                DeleteRecord();
                 break;
             
             case 3: // mostra statistiche
@@ -387,7 +412,7 @@ void ShowEntireDatabase(void){
 
     FILE * p_file;
 
-    p_file = fopen(DATABASE_NAME, "rb");
+    p_file = fopen(DATABASE_FILE, "rb");
 
     do {
         // Verifico se il database è vuoto
@@ -425,7 +450,7 @@ int InsertNewRecord_CheckVehicle(char vehicle_to_check[15]){
 
     //printf("\n### Debug - Vehicle to check: %s\n", vehicle_to_check);
 
-    FILE * p_buffer = fopen(DATABASE_NAME, "rb");
+    FILE * p_buffer = fopen(DATABASE_FILE, "rb");
 
     do{
         fread(&record, sizeof(struct Record), 1, p_buffer);
@@ -450,35 +475,122 @@ int InsertNewRecord_CheckVehicle(char vehicle_to_check[15]){
 }
 
 
-void DeleteRecord(int id){
+void DeleteRecord(){
 
     struct Record temp_record; // Creo il temp_record in cui mettere i dati estratti dal database
     unsigned int choice;
-    int count=0;
+    int count=0; // Count per i record
+    char c; // Char per il controllo di EOF
 
     ShowEntireDatabase();
 
     printf("Quale record vuoi eliminare? (Inserisci il numero ID)\n");
     scanf(" %d", &choice);
 
-    FILE * p_buffer = fopen(DATABASE_NAME, "r+b");
+    FILE * p_read_buffer = fopen(DATABASE_FILE, "rb");
 
     // Trova il record da eliminare e conta quanti record
     do{
-        fread(&temp_record, sizeof(struct Record), 1, p_buffer);
+        fread(&temp_record, sizeof(struct Record), 1, p_read_buffer);
         count++;
     } while (temp_record.id != choice);
 
-    fclose(p_buffer);
+    fclose(p_read_buffer);
+
+    printf("### Record in posizione %d nel database.\n");    
+    printf("### Assegno read_buffer e write_buffer\n");
+
+    // Assegno read and write buffer
+    FILE * p_write_buffer = fopen(TEMP_FILE, "wb");
+    p_read_buffer = fopen(DATABASE_FILE, "rb");
+
+    // Copia in temp tutto il database, tranne la voce da eliminare    
+    do{
+        fread(&temp_record, sizeof(struct Record), 1, p_read_buffer); // Leggi il record
+
+        c = fgetc(p_read_buffer); // Read next char for EOF
+        fseek(p_read_buffer, -1, SEEK_CUR); // reimposto il cursore
+
+        if (temp_record.id == choice){ // Se è quello da eliminare, salta.
+            continue;
+        }
+        else
+        {
+            // Altrimenti copia in write buffer (temp_file)
+            fwrite(&temp_record, sizeof(struct Record), 1, p_write_buffer);
+            printf("### Record %u copiato\n", temp_record.id);
+        }
+        
+    }while(c != EOF);
+
+    fclose(p_read_buffer);
+    fclose(p_write_buffer);
+    printf("### Copia temp completata.\n");
+    printf("### Ricopio temp nel database.\n");
+
+    p_write_buffer = fopen(DATABASE_FILE, "wb");
+    p_read_buffer = fopen(TEMP_FILE, "rb");
 
 
+    // Risposta in database i record del temp    
+    do{
+        fread(&temp_record, sizeof(struct Record), 1, p_read_buffer); // Leggi il record
+
+        c = fgetc(p_read_buffer); // Read next char for EOF
+        fseek(p_read_buffer, -1, SEEK_CUR); // reimposto il cursore
+        
+        fwrite(&temp_record, sizeof(struct Record), 1, p_write_buffer);
+
+        printf("### Record %u copiato\n", temp_record.id);
+        
+    }while(c != EOF);
+    
+    fclose(p_read_buffer);
+    fclose(p_write_buffer);
+    printf("### Copia database completata.\n");
+
+    printf("### Svuoto temp\n");
+
+    p_write_buffer = fopen(TEMP_FILE, "wb");
+    fclose(p_write_buffer);
+
+    printf("\n\n### Record, %u eliminato.\n\n", choice);
+
+}
 
 
+int StartupChecks_CheckIds(){
 
+    FILE * p_buffer = fopen(DATABASE_FILE, "rb");
 
+    struct Record record;
+    int check = 1; // Check per messaggio di ok
+    unsigned int progressivo = 1;
+    char c; // Carattere di verifica per EOF
 
+    printf("\n### Verifico l'ordine degli ID nel database...");
 
+    do{
+        fread(&record, sizeof(struct Record), 1, p_buffer);
 
+        if (record.id == progressivo){
+            progressivo++;
 
+            c = fgetc(p_buffer); // Prendo c per la verifica di EOF
+            fseek(p_buffer, -1, SEEK_CUR); // Riporto indietro il cursore
+        }
+        else
+        {
+            printf("\n\n### Attenzione: rilevati ID non progressivi.\n");
+            check = 0;
+            break;
+        }
+    } while (c != EOF);
 
+    if (check == 1){
+        printf("Niente da riordinare.\n");
+        return 0;
+    }
+
+    return 1;
 }
