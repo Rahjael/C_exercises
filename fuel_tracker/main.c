@@ -5,12 +5,46 @@
 #define CONFIG_FILE "config" // Nome del file config (binary)
 #define TEMP_FILE "temp" // Nome del file temp (binary)
 
+/*
+    Funzioni implementate (+) e da implementare (-):
+
+        frontend:
+            + aggiungi record
+                + id
+                + automezzo
+                +- spesa
+                    - parsing delle virgole
+                + km
+                - data
+            + elimina record
+            + visualizza tutti i record
+            - visualizza le statistiche
+                - statistiche spesa per intervallo di tempo
+                - statistiche spesa per km percorsi
+
+        backend:
+            +- controlli all'avvio
+                + controllo esistenza file config e database
+                + controllo id progressivi
+                - controllo aggiornamenti
+            +- controlli su nuovo inserimento
+                + verifica se nuovo mezzo
+                - verifica km superiori a record precedente
+            +- controlli su eliminazione record
+                + verifica e riordino progressivi subito dopo eliminazione record
+                - warning per ID fuori range
+
+
+*/
+
+
+
 
 // Dichiaro la struttura dei record nel database:
 
 struct Record {
 
-    unsigned int id; 
+    unsigned int id;
     char vehicle[15];
     float amount;
     unsigned int km;
@@ -43,6 +77,7 @@ int InsertNewRecord_CheckVehicle(char string[15]); // Controlla se il veicolo è
 void MainMenu(void); // Mostra il menu principale
 void ShowEntireDatabase(void); // Mostra tutte le voci del database
 void DeleteRecord(); // Elimina dal database la voce selezionata
+void ReorderIds(int startup); // Riordina gli id del database
 
 
 // Main program
@@ -69,7 +104,6 @@ int main(){
     printf("\nBenvenuto in FuelTracker.\n\n");
 
     StartupChecks();
-    printf("Sono presenti %d record\n", CountDatabaseEntries());
 
     printf("\n\n### Carico il menu:\n\n");
 
@@ -138,7 +172,7 @@ void StartupChecks(void){
     }
     else
     {
-        printf("### Database rilevato.\n");
+        printf("### Database rilevato. Sono presenti %d record\n", CountDatabaseEntries());
     }
     
     fclose(p_database);
@@ -147,12 +181,7 @@ void StartupChecks(void){
 
     if(db_is_empty == 0){
         if (StartupChecks_CheckIds() == 1){
-            /*
-
-
-                REORDER IDS
-
-            */
+            ReorderIds(1);
         }
     }
 }
@@ -358,8 +387,8 @@ void MainMenu(void){
 
         "(1) Registra nuovo acquisto\n"
         "(2) Elimina un acquisto\n"
-        "(3) Visualizza database\n"
-        "(4) Statistiche (NON IMPLEMENTATO)" 
+        "(3) Visualizza tutti gli acquisti\n"
+        "(4) Statistiche (NON IMPLEMENTATO)\n"
         "(0) Esci\n"
         );
 
@@ -470,7 +499,7 @@ void DeleteRecord(){
 
     struct Record temp_record; // Creo il temp_record in cui mettere i dati estratti dal database
     unsigned int choice;
-    int count=0; // Count per i record
+    unsigned int count=0; // Count per i record
     char c; // Char per il controllo di EOF
 
     ShowEntireDatabase();
@@ -487,9 +516,6 @@ void DeleteRecord(){
     } while (temp_record.id != choice);
 
     fclose(p_read_buffer);
-
-    printf("### Record in posizione %d nel database.\n");    
-    printf("### Assegno read_buffer e write_buffer\n");
 
     // Assegno read and write buffer
     FILE * p_write_buffer = fopen(TEMP_FILE, "wb");
@@ -509,15 +535,15 @@ void DeleteRecord(){
         {
             // Altrimenti copia in write buffer (temp_file)
             fwrite(&temp_record, sizeof(struct Record), 1, p_write_buffer);
-            printf("### Record %u copiato\n", temp_record.id);
+            // DEBUG printf("### Record %u copiato\n", temp_record.id);
         }
         
     }while(c != EOF);
 
     fclose(p_read_buffer);
     fclose(p_write_buffer);
-    printf("### Copia temp completata.\n");
-    printf("### Ricopio temp nel database.\n");
+    // DEBUG printf("### Copia temp completata.\n");
+    // DEBUG printf("### Ricopio temp nel database.\n");
 
     p_write_buffer = fopen(DATABASE_FILE, "wb");
     p_read_buffer = fopen(TEMP_FILE, "rb");
@@ -532,7 +558,7 @@ void DeleteRecord(){
         
         fwrite(&temp_record, sizeof(struct Record), 1, p_write_buffer);
 
-        printf("### Record %u copiato\n", temp_record.id);
+        // DEBUG printf("### Record %u copiato\n", temp_record.id);
         
     }while(c != EOF);
     
@@ -547,6 +573,10 @@ void DeleteRecord(){
 
     printf("\n\n### Record, %u eliminato.\n\n", choice);
 
+    if(StartupChecks_CheckIds() != 0){
+        ReorderIds(0);
+    }
+
 }
 
 
@@ -555,11 +585,11 @@ int StartupChecks_CheckIds(){
     FILE * p_buffer = fopen(DATABASE_FILE, "rb");
 
     struct Record record;
-    int check = 1; // Check per messaggio di ok
+    int check = 0; // Check per messaggio di ok
     unsigned int progressivo = 1;
     char c; // Carattere di verifica per EOF
 
-    printf("\n### Verifico l'ordine degli ID nel database...");
+    printf("\n### Verifico l'ordine degli ID nel database... ");
 
     do{
         fread(&record, sizeof(struct Record), 1, p_buffer);
@@ -573,15 +603,77 @@ int StartupChecks_CheckIds(){
         else
         {
             printf("\n\n### Attenzione: rilevati ID non progressivi.\n");
-            check = 0;
+            check = 1;
             break;
         }
     } while (c != EOF);
 
-    if (check == 1){
+    if (check == 0){
         printf("Niente da riordinare.\n");
         return 0;
     }
 
     return 1;
+
+}
+
+
+void ReorderIds(int startup){
+
+    struct Record temp_record;
+    unsigned int count = 0;
+    char c;
+
+    FILE * p_read_buffer = fopen(DATABASE_FILE, "rb");
+    FILE * p_write_buffer = fopen(TEMP_FILE, "wb");
+
+    // Controllo le voci del database una per una e le copio su temp
+    // Gli id non progressivi vengono corretti
+    do{
+        count++;
+        fread(&temp_record, sizeof(struct Record), 1, p_read_buffer);
+        if(temp_record.id != count){
+            printf("\n### Id non progressivo. Correggo... ");
+            temp_record.id = count;
+            printf("Corretto.\n");
+        }
+
+        c = fgetc(p_read_buffer);
+        fseek(p_read_buffer, -1, SEEK_CUR);
+
+        fwrite(&temp_record, sizeof(struct Record), 1, p_write_buffer);
+
+    }while (c != EOF);
+
+    fclose(p_read_buffer);
+    fclose(p_write_buffer);
+
+    // Ricopio il temp nel database
+
+    p_read_buffer = fopen(TEMP_FILE, "rb");
+    p_write_buffer = fopen(DATABASE_FILE, "wb");
+
+    do{
+        fread(&temp_record, sizeof(struct Record), 1, p_read_buffer);
+        fwrite(&temp_record, sizeof(struct Record), 1, p_write_buffer);
+
+        c = fgetc(p_read_buffer);
+        fseek(p_read_buffer, -1, SEEK_CUR);
+
+    }while (c != EOF);
+
+    fclose(p_read_buffer);
+    fclose(p_write_buffer);
+
+    // Pulisco temp per sicurezza
+    p_write_buffer = fopen(TEMP_FILE, "wb");
+    fclose(p_write_buffer);
+
+    printf("\n### Id riordinati.\n");
+
+    if (startup == 1){
+    printf("\n### Ripeto i controlli di avvio.\n");
+    StartupChecks();
+    }
+
 }
