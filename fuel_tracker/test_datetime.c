@@ -9,6 +9,8 @@ int main(){
     time_t t;
 
     t = time(NULL);
+
+    /*
     local = localtime(&t);
     printf("Local time and date using localtime function\n");
     printf("time --> %d:%d:%d\n", local->tm_hour, local->tm_min, local->tm_sec);
@@ -23,7 +25,8 @@ int main(){
     printf("This is the %d day of this year\n", gm->tm_yday+1);
     printf("This is the %d day of this week\n", gm->tm_wday);
 
-
+*/
+    printf("\n %ld \n", t);
 
     getchar();
     return 0;
