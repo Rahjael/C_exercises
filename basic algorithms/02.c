@@ -9,10 +9,10 @@
 
 int main(){
 
-    int n, abs_dif, dif;
+    int n, dif;
 
-    printf("Insert 2 integers:\n");
-    scanf("%d", &a);
+    printf("Insert integer:\n");
+    scanf("%d", &n);
 
     // Find absolute difference
 
@@ -22,7 +22,14 @@ int main(){
         dif *= -1;
     }
 
-    if ()
+    if (n <= 51){
+        printf("\nDifference is %d", dif);
+    }
+    else
+    {
+        printf("\nDifference is %d", dif*3);
+    }
+    
 
     return 0;
 }
