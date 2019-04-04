@@ -120,8 +120,8 @@ altrimenti restituisce FALSE. */
 
         while(*position_ptr!=ptr->size)
             position_ptr=&(ptr->buffer[*position_ptr].next);
-        
-        *position_ptr=moved;
+
+        *position_ptr = moved;
         ptr->buffer[moved].value=value;
         ptr->buffer[moved].next=ptr->size;
 
