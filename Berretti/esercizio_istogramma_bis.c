@@ -15,17 +15,16 @@
 
 int create_histogram(int * original_array, int * histogram, int orig_size, int histo_size)
 {
-
     // Inizializzo a 0 gli indici e i contatori che mi serviranno dopo
     int index_orig = 0;
     int index_histo = 0;
     int final_size = 0;
     int how_many;
-
+    short done;
 
     for (; index_orig < orig_size; index_orig++) // itera su ogni elemento di original_array
     {
-        short done = 0; // Imposta un check per vedere se il valore è già stato inserito nell'array di output
+        done = 0; // Imposta un check per vedere se il valore è già stato inserito nell'array di output
 
         for (int check = index_histo; check >= 0; check-=2) // cicla sul nuovo array per vedere se quel valore è già stato contato
         {
@@ -39,7 +38,6 @@ int create_histogram(int * original_array, int * histogram, int orig_size, int h
         if (done == 0) // se quel valore non è stato trovato ne conto le occorrenze e lo inserisco nell'istogramma
         {
             final_size++; // aumento di uno il contatore di valori singoli
-
             how_many = 0; // azzero il contatore di occorrenze
 
             for (int j = 0; j < orig_size; j++) // ciclo l'array originale per contare le occorrenze
@@ -63,15 +61,14 @@ int create_histogram(int * original_array, int * histogram, int orig_size, int h
 int main(void){
 
     int arr[] = VALUES;
-
     int size = sizeof(arr)/sizeof(arr[0]);
     int histo_size = size<<1;
 
-    int * histogram = (int*)malloc(histo_size*sizeof(int)); // creo un target array grande il doppio, come worst case
+    // creo un target array grande il doppio, come worst case
+    int * histogram = (int*)malloc(histo_size*sizeof(int));
 
     // creo l'istogramma e ne assegno la dimensione effettiva
     int final_size = create_histogram(arr, histogram, size, histo_size);
-
 
     // In questo blocco rialloco la memoria con la nuova dimensione
     // per evitare di occupare N*2 memoria quando non necessario
@@ -82,7 +79,6 @@ int main(void){
             temp_array[new] = histogram[new];
 
         free(histogram);
-
         histogram = (int *)malloc((final_size)*sizeof(int)); // creo il nuovo array
 
         for (int new = 0; new < (final_size); new++) // trasferisco dall'appoggio all'array
