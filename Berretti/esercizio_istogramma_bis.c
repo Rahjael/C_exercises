@@ -15,17 +15,21 @@
 
 int create_histogram(int * original_array, int * histogram, int orig_size, int histo_size)
 {
+
+    // Inizializzo a 0 gli indici e i contatori che mi serviranno dopo
     int index_orig = 0;
     int index_histo = 0;
     int final_size = 0;
+    int how_many;
+
 
     for (; index_orig < orig_size; index_orig++) // itera su ogni elemento di original_array
     {
         short done = 0; // Imposta un check per vedere se il valore è già stato inserito nell'array di output
 
-        for (int check = index_histo; check >= 0; check-=2)
+        for (int check = index_histo; check >= 0; check-=2) // cicla sul nuovo array per vedere se quel valore è già stato contato
         {
-            if(histogram[check] == original_array[index_orig])
+            if(histogram[check] == original_array[index_orig]) // Se è già stato contato, interrompi e vai avanti
             {
                 done = 1;
                 break;
@@ -36,24 +40,24 @@ int create_histogram(int * original_array, int * histogram, int orig_size, int h
         {
             final_size++; // aumento di uno il contatore di valori singoli
 
-            // conto le occorrenze in original_array:
-            int how_many = 0;
+            how_many = 0; // azzero il contatore di occorrenze
 
-            for (int j = 0; j < orig_size; j++)
+            for (int j = 0; j < orig_size; j++) // ciclo l'array originale per contare le occorrenze
             {
                 if (original_array[index_orig] == original_array[j])
                 {
-                    how_many++;
+                    how_many++; // aumento il contatore per ogni valore uguale che trovo
                 }
             }
 
+            // assegno il valore e il numero di occorrenze:
             histogram[index_histo] = original_array[index_orig];
             histogram[index_histo+1] = how_many;
             index_histo += 2; // dopo aver registrato i valori in histogram, aumento l'index di 2
         }
     }
 
-    return final_size; // ritorno il numero effettivo di valori presi singolarmente
+    return final_size<<1; // ritorno il numero effettivo di valori presi singolarmente, raddoppiato
 }
 
 int main(void){
@@ -63,7 +67,7 @@ int main(void){
     int size = sizeof(arr)/sizeof(arr[0]);
     int histo_size = size<<1;
 
-    int * histogram = (int*)malloc(histo_size*sizeof(int));
+    int * histogram = (int*)malloc(histo_size*sizeof(int)); // creo un target array grande il doppio, come worst case
 
     // creo l'istogramma e ne assegno la dimensione effettiva
     int final_size = create_histogram(arr, histogram, size, histo_size);
@@ -71,17 +75,17 @@ int main(void){
 
     // In questo blocco rialloco la memoria con la nuova dimensione
     // per evitare di occupare N*2 memoria quando non necessario
-    //
-        int * temp_array = (int *)malloc((final_size<<1)*sizeof(int)); // Creo lo spazio di appoggio
+    // e pulire la stampa finale
+        int * temp_array = (int *)malloc((final_size)*sizeof(int)); // Creo lo spazio di appoggio
 
-        for (int new = 0; new < (final_size<<1); new++) // copio i valori nell'appoggio
+        for (int new = 0; new < (final_size); new++) // copio i valori nell'appoggio
             temp_array[new] = histogram[new];
 
         free(histogram);
 
-        histogram = (int *)malloc((final_size<<1)*sizeof(int)); // creo il nuovo array
+        histogram = (int *)malloc((final_size)*sizeof(int)); // creo il nuovo array
 
-        for (int new = 0; new < (final_size<<1); new++) // trasferisco dall'appoggio all'array
+        for (int new = 0; new < (final_size); new++) // trasferisco dall'appoggio all'array
             histogram[new] = temp_array[new];
 
         free(temp_array);
@@ -93,7 +97,7 @@ int main(void){
 
     // Stampa l'istogramma
     printf("\nValore | Nr occorrenze: \n");
-    for (int i = 0; i<(final_size<<1); i+=2){
+    for (int i = 0; i<(final_size); i+=2){
         printf("%d | %d\n", histogram[i], histogram[i+1]);
     }
 
