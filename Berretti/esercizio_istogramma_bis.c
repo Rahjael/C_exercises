@@ -73,15 +73,15 @@ int main(void){
     // In questo blocco rialloco la memoria con la nuova dimensione
     // per evitare di occupare N*2 memoria quando non necessario
     // e pulire la stampa finale
-        int * temp_array = (int *)malloc((final_size)*sizeof(int)); // Creo lo spazio di appoggio
+        int * temp_array = (int *)malloc(final_size*sizeof(int)); // Creo lo spazio di appoggio
 
-        for (int new = 0; new < (final_size); new++) // copio i valori nell'appoggio
+        for (int new = 0; new < final_size; new++) // copio i valori nell'appoggio
             temp_array[new] = histogram[new];
 
         free(histogram);
-        histogram = (int *)malloc((final_size)*sizeof(int)); // creo il nuovo array
+        histogram = (int *)malloc(final_size*sizeof(int)); // creo il nuovo array
 
-        for (int new = 0; new < (final_size); new++) // trasferisco dall'appoggio all'array
+        for (int new = 0; new < final_size; new++) // trasferisco dall'appoggio all'array
             histogram[new] = temp_array[new];
 
         free(temp_array);
@@ -93,7 +93,7 @@ int main(void){
 
     // Stampa l'istogramma
     printf("\nValore | Nr occorrenze: \n");
-    for (int i = 0; i<(final_size); i+=2){
+    for (int i = 0; i<final_size; i+=2){
         printf("%d | %d\n", histogram[i], histogram[i+1]);
     }
 
