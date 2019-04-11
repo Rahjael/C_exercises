@@ -16,6 +16,27 @@ void function(int var[]){
 
 int main(){
 
+
+
+    int x = 5;
+    printf("x = %d", x);
+
+    for (int x = 0; x <1; x++)
+    { 
+        printf("\nx = %d", x);
+
+        int x = 2;
+    }
+
+    printf("\nx = %d", x);
+
+
+
+
+
+
+
+
 /*
     int var[] = {5, 6};
 
@@ -49,6 +70,8 @@ int main(){
 */
 
 
+/*
+
     int arr[5] = {45, 2, 345, 43, 6};
 
     printf("\n arr: \t%d", arr);
@@ -57,5 +80,5 @@ int main(){
     printf("\n arr[2]: \n%d", arr[2]);
     printf("\n *(arr+2): \t%d", *(arr+2));
 
-
+*/
 }
