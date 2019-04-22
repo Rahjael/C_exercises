@@ -6,11 +6,12 @@
 
 void merge_sort(float * array, int array_size);
 void swap(float * x, float * y);
-void divide_and_swap(float * p_array, int * start, int * mid, int * end, int size);
+void divide_and_swap(float * p_array, int start, int end, int size);
+
+
 //
 // Program
 //
-
 
 int main(void)
 {
@@ -27,6 +28,8 @@ int main(void)
 
     return 0;
 }
+
+
 //
 // Function definitions
 //
@@ -38,24 +41,61 @@ void swap(float * x, float * y)
     *y = temp;
 }
 
-
-void divide_and_swap(float * p_array, int * start, int * mid, int * end, int size)
+void divide_and_swap(float * p_array, int start, int end, int size)
 {
-    *mid = *start+((*start+*end)/2);
+    /* Note to myself:
+
+    la ricorsione si occupa della metà sinistra della divisione. Per la metà destra basta scorrere nel seguito,
+    quando esce dalla funzione si ritrova alla fine della metà sinistra esterna.
+
+    Probabilmente devo dividere in due l'array corrente, e poi annidarmi in quello di sinistra. Quando torno indietro
+    mi ritrovo quello di destra già pronto.
+
+    Preparare variabili per inizio e fine array di sinistra e inizio e fine array di destra.
+
+    Provare questa strada.
+
+    (Continuare a provare con soli indici, senza allocare nuova memoria)
+
+    */
+
+   
+    // Creo gli indici per i nuovi array
+
+    int l_start = start;
+    int l_end = start+((start+end)/2);
+    int l_size = l_end - l_start + 1;
+
+    int r_start = l_end+1;
+    int r_end = size-1;
+    int r_size = r_end - r_start + 1;
+
+
+    // LEFT PART
 
     // recurse until start and end have same value
-    if (mid != 0)
-        divide_and_swap(p_array, start, mid, end, size);
+    if (l_start != l_end)
+        divide_and_swap(p_array, l_start, l_end, l_size);
 
-    float * left = &p_array[*start];
-    float * right = &p_array[*end];
+
+    // if you can't divide, compare and merge
+
+    float * left = &p_array[start];
+    float * right = &p_array[end];
+
 
     // single comparison
     if (*left > *right)
         swap(left, right);
 
-    *start = (*end)++;
-    *end = (*start)++;
+
+
+
+    // RIGHT PART
+
+    // recurse until start and end have same value
+    if (l_start != l_end)
+        divide_and_swap(p_array, l_start, l_end, l_size);
 
 
 
@@ -64,6 +104,8 @@ void divide_and_swap(float * p_array, int * start, int * mid, int * end, int siz
 
 
 }
+
+
 
 void merge_sort(float * p_array, int array_size)
 {
@@ -76,41 +118,38 @@ void merge_sort(float * p_array, int array_size)
     // otherwise go through with sorting.
 
     // setting up needed variables
-    int start = 0;
-    int end = array_size-1;
-    int * mid = (start+end)/2;
+    int l_start = 0;
+    int l_end = (l_start+l_end)/2;
+    int l_size =  l_end - l_start + 1;
+    int r_start = l_end+1;
+    int r_end = array_size-1;
+    int r_size =  r_end - r_start + 1;
 
-    divide_and_swap(p_array, &start, &mid, &end, array_size);
+    // assign first half to recursive function
+    divide_and_swap(p_array, l_start, l_end, array_size);
 
-
-
-
-
-
-
-
-
+    // assign second half to recursive function
+    divide_and_swap(p_array, r_start, r_end, array_size);
 
 
 
 
+}
 
 
 
 
 
-/*
-    int blocksize = 1;
-    int start = 0;
-    int end = array_size;
-    int l_index;
-    int r_index;
-
-    float * left;
-    float * right;
 
 
-    
+
+
+
+
+
+
+
+
 
 
 
@@ -145,8 +184,6 @@ void merge_sort(float * p_array, int array_size)
 
     }
 
-
-
     do
     {
         // if there are indexes left, assign them
@@ -172,8 +209,3 @@ void merge_sort(float * p_array, int array_size)
     } while (left <= blocksize && right <= blocksize);
     
 */
-
-
-
-
-}
