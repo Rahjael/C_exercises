@@ -14,9 +14,23 @@ void function(int var[]){
 
 
 
+
+
 int main(){
 
 
+
+
+
+
+
+
+
+
+
+
+
+/*
 
     int x = 5;
     printf("x = %d", x);
@@ -30,7 +44,7 @@ int main(){
 
     printf("\nx = %d", x);
 
-
+*/
 
 
 
