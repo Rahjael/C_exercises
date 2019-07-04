@@ -6,8 +6,6 @@ selection sort. Scrivere anche l’equazione di costo e la complessità dell’a
  */
 
 
-#include <stdlib.h>
-
 
 // struttura per la lista sequenziale (si suppone già presente nel programma)
 // è da considerarsi un circular buffer
@@ -30,11 +28,12 @@ void exercise_function(struct list * list)
     int selected;
     int comparing;
     int temp;
+    int i = 0;
     
     int * min; 
 
     // inizio il sorting
-    for(selected = list->head; selected != list->tail; selected = (selected + 1) % list->size) // ciclo su tutti gli indici del buffer
+    for(selected = list->head; selected != (list->tail-i); selected = (selected + 1) % list->size) // ciclo su tutti gli indici del buffer
     {
         min = &(list->buffer[selected]); // prendo l'elemento corrente e lo considero il minimo
 
@@ -50,6 +49,9 @@ void exercise_function(struct list * list)
         temp = list->buffer[selected];
         list->buffer[selected] = *min;
         *min = temp;
+
+        // aumento l'iteratore
+        i++;
     }
 }
 
@@ -77,8 +79,10 @@ void exercise_function(struct list * list)
     51. 1
     52. 1
 
+    56. 1
 
-    Quindi dovrebbe venire 3(n-1)(n/2)+4
-                        = 3((n^2-n)/2)+4 ??? Boh.
+
+    Quindi dovrebbe venire 4(n-1)(n/2)+4
+                        = 4((n^2-n)/2)+4 ??? Boh.
 
  */
