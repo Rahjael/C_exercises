@@ -83,6 +83,10 @@ void exercise_function(struct list * list)
 
 
     Quindi dovrebbe venire 4(n-1)(n/2)+4
-                        = 4((n^2-n)/2)+4 ??? Boh.
+                        = 4((n^2-n)/2)+4
+
+            e quindi direi = 4*(n^2) per via di quel discorso che l'ordine di grandezza più grande rende irrilevanti quelli più piccoli
+
+            Però boh non sono affatto sicuro di sta cosa, fammi sapere.
 
  */
