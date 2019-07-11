@@ -30,7 +30,7 @@ void swap_in_place(int * a, int * b)
 void simple_print_list(int * list, int size)
 {
     printf("\n");
-    for(int i=0; i<size; i++)
+    for(int i=0; i < size; i++)
     {
         printf("%d ", list[i]);
     }
@@ -174,24 +174,12 @@ void mergesort_impera(int * main, int size, int * temp)
 
 void mergesort_divide(int * main_array, int size, int * temp)
 {
-    if(size > 2) // divide fino a che size = 2
+    if(size > 1) // divide fino a che size > 1
     {
         mergesort_divide(main_array, (size/2), temp);
         mergesort_divide(&main_array[size/2], size-(size/2), &temp[size/2]);
         mergesort_impera(main_array, size, temp);
     }
-    else
-    {
-        if(size == 2) // size = 2, dimensione minima ordinabile. Ordinala.
-        {
-            if(main_array[0] > main_array[1])
-            {
-                int swap = main_array[1];
-                main_array[1] = main_array[0];
-                main_array[0] = swap;
-            }
-        }
-    }    
 }
 
 

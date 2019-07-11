@@ -1,7 +1,7 @@
 
 /*
 
-    Scrivi uno programma con uno stack con le seguenti funzioni:
+    Scrivi un programma con uno stack con le seguenti funzioni:
 
         l'utente può aggiungere o eliminare un intero
         viene stampata la lista ad ogni operazione
@@ -18,7 +18,7 @@
 struct stack
 {
     int * buffer;
-    int TOS;
+    int TOS; // top of stack
     int size;
 };
 
