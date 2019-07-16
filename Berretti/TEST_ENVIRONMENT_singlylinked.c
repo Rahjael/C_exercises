@@ -1,10 +1,31 @@
+
+
+
+
+
+
+
+
+//DA FARE
+
+
+
+
+
+
+
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 #define MIN 0
 #define MAX 10
-#define LENGTH 30
+#define LENGTH 8
 
 
 //
@@ -20,7 +41,7 @@ int get_random_number(int min, int max)
     return num;
 }
 
-void swap_in_place(int * a, int * b)
+void swap(int * a, int * b)
 {
     int temp = *a;
     *a = *b;
@@ -49,7 +70,7 @@ void simple_print_list(int * list, int size)
 //
 // ALGORITMI:
 //
-//
+//  
 
 
 
@@ -254,8 +275,6 @@ void mergesort_main(int * main_array, int size)
 
 void quicksort(int * array, int start, int end)
 {
-    simple_print_list(array, 8);
-
     if(start < end)
     {
         int pivot = end;
@@ -281,9 +300,12 @@ void quicksort(int * array, int start, int end)
 
         }
 
-        temp = array[right];
-        array[right] = array[pivot];
-        array[pivot] = temp;
+        //if(array[right] > array[pivot])
+        //{
+            temp = array[right];
+            array[right] = array[pivot];
+            array[pivot] = temp;
+        //}
 
         quicksort(array, start, (right-1));
         quicksort(array, right, end);
@@ -303,78 +325,7 @@ void quicksort(int * array, int start, int end)
 //
 
 
-// ALGORITMI MIEI
 
-void double_bubblesort(int * array, int size)
-{
-    int temp;
-    int inner;
-    int outer;
-    
-
-    int innerfound = 1;
-    int outerfound = 1;
-
-    while(innerfound == 1)
-    {
-        innerfound = 0;
-        
-        if(outerfound == 1)
-        {
-            printf("\ninizio outer");
-            
-            outer = 0;
-            
-            while(outer < (size/2))
-            {
-                printf("\nouter check");
-                if(array[outer] > array[(size-1)-outer])
-                {
-                    temp = array[outer];
-                    array[outer] = array[(size-1)-outer];
-                    array[(size-1)-outer] = temp;
-
-                    outerfound = 1;
-                }
-                
-                outer++;
-
-            }
-
-            simple_print_list(array, size);
-        }
-
-    
-        printf("\ninizio inner");
-
-        inner = 0;
-
-        printf("\ninner loop");
-        while(inner < size-1)
-        {
-            printf("\ninner check");
-            if(array[inner] > array[inner+1])
-            {
-                temp = array[inner];
-                array[inner] = array[inner+1];
-                array[inner+1] = temp;
-
-                innerfound = 1;
-            }
-
-            inner++;
-        }
-            simple_print_list(array, size);
-    }
-}
-
-
-
-
-
-
-
-// FINE ALGORITMI MIEI
 
 
 
@@ -406,7 +357,7 @@ int main()
 
         //bubble_sort(list, LENGTH);
 
-        //bubble_sort_improved(list, LENGTH);
+        bubble_sort_improved(list, LENGTH);
 
         //selection_sort(list, LENGTH);
 
@@ -414,9 +365,8 @@ int main()
 
         //mergesort_main(list, LENGTH);
 
-        //quicksort(list, 0, LENGTH-1);
 
-        double_bubblesort(list, LENGTH);
+        //quicksort(list, 0, LENGTH-1);
 
     //
     //
