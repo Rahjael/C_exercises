@@ -67,7 +67,15 @@ void reverse_records(struct list * list)
         // fine swap values
 
 
-        // cambia indici
+        // cambiati i valori, cambio gli indici
+
+        // se è la prima iterazione, cambio list->first con l'indice dell'ultimo elemento che adesso è primo
+        if(counter == 0)
+        {
+            list->first = list->buffer[penultimate_index].next;
+        }
+
+
         // cambio il next dell'ultimo elemento per farlo puntare al penultimo (inverto l'ordine)
         list->buffer[(list->buffer[penultimate_index].next)].next = penultimate_index;
 
@@ -79,12 +87,6 @@ void reverse_records(struct list * list)
 
         // riporto penultimate_index al pari di head
         penultimate_index = head_index;
-
-        // se è la prima iterazione, cambio list->first con l'indice dell'ultimo elemento
-        if(counter == 0)
-        {
-            list->first = list->buffer[penultimate_index].next;
-        }
 
         counter++; // aumento counter per capire dove sono
     }
