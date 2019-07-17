@@ -33,7 +33,8 @@ void add_to_histogram(struct histogram_node ** double_pointer, int value, int co
         double_pointer = &((*double_pointer)->next);
     }
     
-    *double_pointer = newnode; 
+    *double_pointer = newnode;
+
 }
 
 
@@ -78,7 +79,7 @@ void build_histogram(struct histogram_node ** head_address, int * V, int N)
             // a questo punto aggiungo un nuovo nodo con i dati raccolti
 
             add_to_histogram(head_address, V[current], count);
-        }
+        }        
     }
 }
 
@@ -92,6 +93,28 @@ void print_histogram(struct histogram_node ** pointer)
 
     }
 }
+
+
+void print_test(struct histogram_node ** double_pointer)
+{
+
+    printf("\nValore: %d", (((((((*double_pointer)->next)->next)->next)->next)->next)->value) );
+
+}
+
+
+struct histogram_node * get_last_node(struct histogram_node ** double_pointer)
+{
+    while( (*double_pointer)->next != NULL)
+    {
+        double_pointer = &(*double_pointer)->next;
+    }
+
+    return (*double_pointer);
+}
+
+
+
 
 int main()
 {
@@ -114,6 +137,10 @@ int main()
     printf("\nstampo l'istogramma");
     print_histogram(&head);    
 
+    print_test(&head);
+
+
+    printf("\nLast node value: %d", (get_last_node(&head))->value );
 
 
     return 0;

@@ -7,7 +7,7 @@ selezione.
  */
 
 
-// struttura dati
+// si assume la seguente struttura dati
 
 struct list
 {
@@ -15,7 +15,6 @@ struct list
     int first;
     int free;
     int size;
-
 };
 
 struct record
@@ -27,8 +26,36 @@ struct record
 
 // funzione
 
-void troll_sort(struct list * list)
+void selection_sort(struct list * list)
 {
+    int * min;
+    int swap;
+
+    for(int i = list->first; i < list->size; i = list->buffer[i].next) // per ogni valore della lista
+    {
+        min = &list->buffer[i].value; // lo assegno come più basso
+
+        for(int k = (list->buffer[i].next); k < list->size; k = list->buffer[k].next) // cerco il minimo
+        {
+            if(list->buffer[k].value < *min) // se lo trovo lo punto
+            {
+                min = &list->buffer[k].value;
+            }
+        }
+
+        // swappo
+        swap = list->buffer[i].value;
+        list->buffer[i].value = *min;
+        *min = swap;
+    }
+
+
+}
+
+
+
+
+/*
     float temp[list->size]; // creo un array temp dove mettere i valori da ordinare
     int temp_index = 0; // index array da popolare
     int index = list->first; // index di visita lista
@@ -65,7 +92,9 @@ void troll_sort(struct list * list)
     }
 
     // sorting terminato, ricopio i valori in ordine nella lista
+*/
 
+/*
     // riparto da capo
     index = list->first;
     temp_index = 0;
@@ -78,13 +107,10 @@ void troll_sort(struct list * list)
         index = list->buffer[index].next; // next index in lista collegata
         temp_index++; // incremento indice array temp
     }
-
+*/
 
     // fine
 }
-
-
-
 
 
 
