@@ -41,8 +41,8 @@ void reverse_records(struct list * list)
     La logica funziona così:
 
     Ho due indici che partono da posizioni opposte.
-    Ad ogni ciclo invertono i rispettivi valori e si muovono entrambi verso il centro.
-    Quando counter raggiunge (size/2) vuol dire che sono al centro della lista, e ho swappato tutti i valori
+    Ad ogni ciclo si muovono entrambi verso il centro.
+    Quando counter raggiunge (size/2) vuol dire che sono al centro della lista, e ho swappato tutti gli indici
     
      */
 

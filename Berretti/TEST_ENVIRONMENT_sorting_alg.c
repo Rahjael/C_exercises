@@ -226,6 +226,10 @@ void mergesort_divide(int * main_array, int size, int * temp)
     {
         mergesort_divide(main_array, (size/2), temp);
         mergesort_divide(&main_array[size/2], size-(size/2), &temp[size/2]);
+
+        // i divide ricevono SEMPRE l'indirizzo dove inizia la prima partizione di main array e di temp, 
+        // la dimensione dell'array, l'indirizzo dove inizia la seconda partizione di main array e di temp
+
         mergesort_impera(main_array, size, temp);
     }
 }
