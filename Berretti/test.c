@@ -1,4 +1,13 @@
-#include <stdio.h>
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16,12 +25,28 @@ void function(int var[]){
 
 
 
-int main(){
 
 
 
 
+/*
 
+
+void main(){
+
+
+
+int a = 5;
+
+int * ptr;
+
+ptr = NULL;
+
+
+printf("%d", ptr);
+
+
+*/
 
 
 

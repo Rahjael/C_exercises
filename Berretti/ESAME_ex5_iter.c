@@ -1,3 +1,7 @@
+
+// vecchia versione, scartata perché ho usato troppi puntatori. Funzionava ma la logica era troppo convoluta
+
+
 /*
     Scrivere la funzione C che riceve in ingresso una lista collegata con puntatori listA
     di valori interi e restituisce tra i parametri formali una lista collegata con puntatori
@@ -10,6 +14,8 @@
     con valore e numero di elementi consecutivi rimossi.
 
 */
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +41,7 @@ void add_to_list(struct nodeA ** headA, int value)
 {
     struct nodeA * ptr = *headA; // creo un puntatore temporaneo che mi servirà dopo
 
-    struct nodeA * temp = (struct nodeA *)malloc(sizeof(struct nodeA)); // alloco la memoria per il nuovo nodo
+    struct nodeA * temp = (struct nodeA *)malloc(sizeof(struct nodeA)); // alloco il nuovo elemento
     temp->next = NULL;
     temp->value = value;
 
@@ -55,7 +61,6 @@ void add_to_list(struct nodeA ** headA, int value)
 }
 
 void print_listA(struct nodeA * ptr)
-/* Stampa lista A */
 {
     printf("\nLista A: ");
 
@@ -67,7 +72,6 @@ void print_listA(struct nodeA * ptr)
 }
 
 void print_listB(struct nodeB * ptr)
-/* Stampa lista B */
 {
     printf("\nLista B: ");
 
@@ -77,18 +81,8 @@ void print_listB(struct nodeB * ptr)
         ptr = ptr->next;
     }
 }
+ 
 
-
-void recursive_free(struct nodeA * free_from_here)
-/* Questa mi serve per liberare la memoria all'interno della funzione */
-{
-    if(free_from_here->next != NULL) //se è l'ultima chiamata della coda ricorsiva, esce
-    {
-        recursive_free(free_from_here->next);
-        free(free_from_here->next);
-        free_from_here->next = NULL;
-    }
-}
 
 //
 // ESERCIZIO:
@@ -107,19 +101,23 @@ struct nodeB * find_occurrencies(struct nodeA** headA, struct nodeB ** headB)
 
     // scorro currentA su ogni nodo fino alla fine
     while(currentA->next != NULL)
-    {        
-        if(currentA->value == currentA->next->value ) // trovato valore successivo uguale
+    {
+        count = 1; // resetto il contatore
+
+        if(currentA->value == currentA->next->value) // trovato valore successivo uguale
         {
-            scanA = currentA->next; // imposto il counter            
-            count = 2; // resetto il contatore
+            scanA = currentA->next; // imposto lo scanner al successivo
             
-            while(scanA->next != NULL && scanA->next->value == currentA->value) // se il prossimo è uguale, avanzo scan
+            while(scanA->next->value == currentA->value) //fino a che scan ha lo stesso value di current
             {
                 count++; // aumento il contatore
-                scanA = scanA->next;
 
+                if(scanA->next != NULL) // se non sono all'ultimo elemento
+                {
+                    scanA = scanA->next; // avanzo scanA al nodo successivo
+                }
             }
-            // !!! scanA si trova ora all'ultimo elemento uguale ai precedenti
+            // !!! scanA si trova ora al primo elemento diverso dai precedenti
 
             // creo il nuovo nodo in listB
             tempB = (struct nodeB *)malloc(sizeof(struct nodeB)); // alloco il nuovo nodo
@@ -145,35 +143,42 @@ struct nodeB * find_occurrencies(struct nodeA** headA, struct nodeB ** headB)
                 // currentB sta ora puntando all'ultimo nodo di listB, lo collego
                 currentB->next = tempB;
             }
-            
+
             // adesso rimuovo gli elementi successivi al primo
 
             // REMINDER:
             // currentA sta ancora puntando al primo elemento nella serie degli uguali successivi
-            // scanA sta ancora puntando all'ultimo elemento degli uguali
+            // scanA sta ancora puntando al primo elemento diverso successivo a currentA
 
-            if(scanA->next != NULL) // se la lista non è finita,
+            // aggancio
+            tempA = currentA; // salvo currentA (il primo della serie di uguali)
+            currentA = currentA->next; // avanzo currentA
+
+            if(scanA->next != NULL) // se non sono alla fine della lista
             {
-                tempA = scanA->next; // salvo l'indirizzo del successivo
-                scanA->next = NULL; // setta l'ultimo elemento da liberare
-                recursive_free(currentA); // e poi libera la memoria
-                currentA->next = tempA; // collego il nodo che ho calcolato al nuovo successivo
+                tempA->next = scanA; // aggancio il primo nodo al seguito della lista
             }
             else
-            {                   // se la lista è finita
-                scanA->next = NULL; // setto l'ultimo elemento da liberare
-                recursive_free(currentA); // libera la memoria,
-                currentA->next = NULL; // e poi chiudi la lista
+            {
+                tempA->next = NULL; // altrimenti chiudo la lista
+            }
+            
+            // ora posso eliminare tutti i valori nel mezzo
+            while(currentA != scanA && currentA->next != NULL) // finché currentA non raggiunge il primo elemento diverso o la lista finisce
+            {
+                tempA = currentA;
+                currentA = currentA->next;
+                free(tempA);
             }
 
             // ho finito di liberare la memoria
 
         } // fine if(currentA->value == currentA->next->value)
-
-        if(currentA->next != NULL)
+        else
         {
             currentA = currentA->next; // avanzo a controllare l'elemento successivo
         }
+        
     }
 
     return *headB;
@@ -218,11 +223,11 @@ int main()
     headB = find_occurrencies(&headA, &headB);
     printf("\nModifiche apportate.");
 
-    // ristampo le liste
+
     print_listA(headA);
+
+    // stampo listB per verifica
     print_listB(headB);
 
     return 0;
 }
-
-
